@@ -224,26 +224,26 @@ pub struct PhysicalDeviceGpaPropertiesAmdBuilder<'a> {
     inner: PhysicalDeviceGpaPropertiesAmd,
     marker: ::std::marker::PhantomData<&'a ()>,
 }
-pub unsafe trait ExtendsPhysicalDeviceGpaPropertiesAmd {}
-unsafe impl ExtendsPhysicalDeviceProperties2 for PhysicalDeviceGpaPropertiesAmd {}
-impl<'a> ::std::ops::Deref for PhysicalDeviceGpaPropertiesAmdBuilder<'a> {
-    type Target = PhysicalDeviceGpaPropertiesAmd;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> PhysicalDeviceGpaPropertiesAmdBuilder<'a> {
-    pub fn next<T>(mut self, next: &'a mut T) -> PhysicalDeviceGpaPropertiesAmdBuilder<'a>
-    where
-        T: ExtendsPhysicalDeviceGpaPropertiesAmd,
-    {
-        self.inner.p_next = next as *mut T as *mut c_void;
-        self
-    }
-    pub fn build(self) -> PhysicalDeviceGpaPropertiesAmd {
-        self.inner
-    }
-}
+// pub unsafe trait ExtendsPhysicalDeviceGpaPropertiesAmd {}
+// unsafe impl ExtendsPhysicalDeviceProperties2 for PhysicalDeviceGpaPropertiesAmd {}
+// impl<'a> ::std::ops::Deref for PhysicalDeviceGpaPropertiesAmdBuilder<'a> {
+//     type Target = PhysicalDeviceGpaPropertiesAmd;
+//     fn deref(&self) -> &Self::Target {
+//         &self.inner
+//     }
+// }
+// impl<'a> PhysicalDeviceGpaPropertiesAmdBuilder<'a> {
+//     pub fn next<T>(mut self, next: &'a mut T) -> PhysicalDeviceGpaPropertiesAmdBuilder<'a>
+//     where
+//         T: ExtendsPhysicalDeviceGpaPropertiesAmd,
+//     {
+//         self.inner.p_next = next as *mut T as *mut c_void;
+//         self
+//     }
+//     pub fn build(self) -> PhysicalDeviceGpaPropertiesAmd {
+//         self.inner
+//     }
+// }
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
@@ -664,34 +664,34 @@ pub struct PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a> {
     inner: PhysicalDeviceWaveLimitPropertiesAmd,
     marker: ::std::marker::PhantomData<&'a ()>,
 }
-pub unsafe trait ExtendsPhysicalDeviceWaveLimitPropertiesAmd {}
-unsafe impl ExtendsPhysicalDeviceProperties2 for PhysicalDeviceWaveLimitPropertiesAmd {}
-impl<'a> ::std::ops::Deref for PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a> {
-    type Target = PhysicalDeviceWaveLimitPropertiesAmd;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a> {
-    pub fn push_next<T>(
-        mut self,
-        next: &'a mut T,
-    ) -> PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a>
-    where
-        T: ExtendsPhysicalDeviceWaveLimitPropertiesAmd,
-    {
-        unsafe {
-            let next_ptr = next as *mut T as *mut BaseOutStructure;
-            let last_next = ptr_chain_iter(next).last().unwrap();
-            (*last_next).p_next = self.inner.p_next as _;
-            self.inner.p_next = next_ptr as _;
-        }
-        self
-    }
-    pub fn build(self) -> PhysicalDeviceWaveLimitPropertiesAmd {
-        self.inner
-    }
-}
+// pub unsafe trait ExtendsPhysicalDeviceWaveLimitPropertiesAmd {}
+// unsafe impl ExtendsPhysicalDeviceProperties2 for PhysicalDeviceWaveLimitPropertiesAmd {}
+// impl<'a> ::std::ops::Deref for PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a> {
+//     type Target = PhysicalDeviceWaveLimitPropertiesAmd;
+//     fn deref(&self) -> &Self::Target {
+//         &self.inner
+//     }
+// }
+// impl<'a> PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a> {
+//     pub fn push_next<T>(
+//         mut self,
+//         next: &'a mut T,
+//     ) -> PhysicalDeviceWaveLimitPropertiesAmdBuilder<'a>
+//     where
+//         T: ExtendsPhysicalDeviceWaveLimitPropertiesAmd,
+//     {
+//         unsafe {
+//             let next_ptr = next as *mut T as *mut BaseOutStructure;
+//             let last_next = ptr_chain_iter(next).last().unwrap();
+//             (*last_next).p_next = self.inner.p_next as _;
+//             self.inner.p_next = next_ptr as _;
+//         }
+//         self
+//     }
+//     pub fn build(self) -> PhysicalDeviceWaveLimitPropertiesAmd {
+//         self.inner
+//     }
+// }
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
