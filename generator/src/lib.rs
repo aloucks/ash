@@ -1621,7 +1621,7 @@ pub fn derive_setters(
             // Unique cases
             if name == "pCode" {
                 return Some(quote!{
-                        pub fn code(mut self, code: &'a [u32]) -> #name_builder<'a> {
+                        pub fn code(mut self, code: &[u32]) -> #name_builder {
                             self.inner.code_size = code.len() * 4;
                             self.inner.p_code = code.as_ptr() as *const u32;
                             self
@@ -1631,7 +1631,7 @@ pub fn derive_setters(
 
             if name == "pSampleMask" {
                 return Some(quote!{
-                        pub fn sample_mask(mut self, sample_mask: &'a [SampleMask]) -> #name_builder<'a> {
+                        pub fn sample_mask(mut self, sample_mask: &[SampleMask]) -> #name_builder {
                             self.inner.p_sample_mask = sample_mask.as_ptr() as *const SampleMask;
                             self
                         }
@@ -1643,7 +1643,7 @@ pub fn derive_setters(
         if param_ident_string.starts_with("p_") || param_ident_string.starts_with("pp_") {
             if param_ty_string == "*const c_char" {
                 return Some(quote!{
-                        pub fn #param_ident_short(mut self, #param_ident_short: &'a ::std::ffi::CStr) -> #name_builder<'a> {
+                        pub fn #param_ident_short(mut self, #param_ident_short: & ::std::ffi::CStr) -> #name_builder {
                             self.inner.#param_ident = #param_ident_short.as_ptr();
                             self
                         }
@@ -1656,7 +1656,7 @@ pub fn derive_setters(
                         let array_size_ident = Ident::from(array_size.to_snake_case().as_str());
                         if param_ty_string == "*const *const c_char" {
                             return Some(quote!{
-                                    pub fn #param_ident_short(mut self, #param_ident_short: &'a [*const c_char]) -> #name_builder<'a> {
+                                    pub fn #param_ident_short(mut self, #param_ident_short: & [*const c_char]) -> #name_builder {
                                         self.inner.#param_ident = #param_ident_short.as_ptr();
                                         self.inner.#array_size_ident = #param_ident_short.len() as _;
                                         self
@@ -1669,20 +1669,20 @@ pub fn derive_setters(
                         if param_ty_string.starts_with("*const ") {
                             let slice_type = &param_ty_string[7..];
                             if slice_type == "c_void" {
-                                slice_param_ty_tokens = "&'a [u8]".to_string();
+                                slice_param_ty_tokens = "&[u8]".to_string();
                                 ptr = ".as_ptr() as *const c_void";
                             } else {
-                                slice_param_ty_tokens = "&'a [".to_string() + slice_type + "]";
+                                slice_param_ty_tokens = "&[".to_string() + slice_type + "]";
                                 ptr = ".as_ptr()";
                             }
                         } else {
                             // *mut
                             let slice_type = &param_ty_string[5..];
                             if slice_type == "c_void" {
-                                slice_param_ty_tokens = "&'a mut [u8]".to_string();
+                                slice_param_ty_tokens = "&mut [u8]".to_string();
                                 ptr = ".as_mut_ptr() as *mut c_void";
                             } else {
-                                slice_param_ty_tokens = "&'a mut [".to_string() + slice_type + "]";
+                                slice_param_ty_tokens = "&mut [".to_string() + slice_type + "]";
                                 ptr = ".as_mut_ptr()";
                             }
                         }
@@ -1691,7 +1691,7 @@ pub fn derive_setters(
 
                         if let vkxml::ArrayType::Dynamic = array_type {
                                 return Some(quote!{
-                                    pub fn #param_ident_short(mut self, #param_ident_short: #slice_param_ty_tokens) -> #name_builder<'a> {
+                                    pub fn #param_ident_short(mut self, #param_ident_short: #slice_param_ty_tokens) -> #name_builder {
                                         self.inner.#array_size_ident = #param_ident_short.len() as _;
                                         self.inner.#param_ident = #param_ident_short#ptr;
                                         self
@@ -1703,10 +1703,10 @@ pub fn derive_setters(
             }
 
             if param_ty_string.starts_with("*const ") {
-                let slice_param_ty_tokens = "&'a ".to_string() + &param_ty_string[7..];
+                let slice_param_ty_tokens = "& ".to_string() + &param_ty_string[7..];
                 let slice_param_ty_tokens = Term::intern(&slice_param_ty_tokens);
                 return Some(quote!{
-                        pub fn #param_ident_short(mut self, #param_ident_short: #slice_param_ty_tokens) -> #name_builder<'a> {
+                        pub fn #param_ident_short(mut self, #param_ident_short: #slice_param_ty_tokens) -> #name_builder {
                             self.inner.#param_ident = #param_ident_short;
                             self
                         }
@@ -1716,7 +1716,7 @@ pub fn derive_setters(
 
         if param_ty_string == "Bool32" {
             return Some(quote!{
-                pub fn #param_ident_short(mut self, #param_ident_short: bool) -> #name_builder<'a> {
+                pub fn #param_ident_short(mut self, #param_ident_short: bool) -> #name_builder {
                     self.inner.#param_ident = #param_ident_short.into();
                     self
                 }
@@ -1724,7 +1724,7 @@ pub fn derive_setters(
         }
 
         Some(quote!{
-            pub fn #param_ident_short(mut self, #param_ident_short: #param_ty_tokens) -> #name_builder<'a> {
+            pub fn #param_ident_short(mut self, #param_ident_short: #param_ty_tokens) -> #name_builder {
                 self.inner.#param_ident = #param_ident_short;
                 self
             }
@@ -1753,7 +1753,7 @@ pub fn derive_setters(
             /// valid extension structs can be pushed into the chain.
             /// If the chain looks like `A -> B -> C`, and you call `builder.push_next(&mut D)`, then the
             /// chain will look like `A -> D -> B -> C`.
-            pub fn push_next<T: #extends_name>(mut self, next: &'a mut T) -> #name_builder<'a> {
+            pub fn push_next<T: #extends_name>(mut self, next: & mut T) -> #name_builder {
                 unsafe{
                     let next_ptr = next as *mut T as *mut BaseOutStructure;
                     // `next` here can contain a pointer chain. This means that we must correctly
@@ -1790,7 +1790,7 @@ pub fn derive_setters(
     // If the struct extends something we need to implement the trait.
     let impl_extend_trait = root_structs.iter().map(|extends| {
         quote! {
-            unsafe impl #extends for #name_builder<'_> {
+            unsafe impl #extends for #name_builder {
             }
             unsafe impl #extends for #name {
             }
@@ -1799,25 +1799,23 @@ pub fn derive_setters(
 
     let q = quote! {
         impl #name {
-            pub fn builder<'a>() -> #name_builder<'a> {
+            pub fn builder() -> #name_builder {
                 #name_builder {
                     inner: #name::default(),
-                    marker: ::std::marker::PhantomData,
                 }
             }
         }
 
         #[repr(transparent)]
-        pub struct #name_builder<'a> {
+        pub struct #name_builder {
             inner: #name,
-            marker: ::std::marker::PhantomData<&'a ()>,
         }
 
         #(#impl_extend_trait)*
         #next_trait
 
 
-        impl<'a> ::std::ops::Deref for #name_builder<'a> {
+        impl ::std::ops::Deref for #name_builder {
             type Target = #name;
 
             fn deref(&self) -> &Self::Target {
@@ -1825,13 +1823,13 @@ pub fn derive_setters(
             }
         }
 
-        impl<'a> ::std::ops::DerefMut for #name_builder<'a> {
+        impl ::std::ops::DerefMut for #name_builder {
             fn deref_mut(&mut self) -> &mut Self::Target {
                 &mut self.inner
             }
         }
 
-        impl<'a> #name_builder<'a> {
+        impl #name_builder {
             #(#setters)*
 
             #next_function
@@ -1844,7 +1842,6 @@ pub fn derive_setters(
             }
         }
     };
-
     Some(q)
 }
 
